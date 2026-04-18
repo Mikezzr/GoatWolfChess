@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "StartGame",
+            "request": "launch",
+            "mainClass": "StartGame",
+            "projectName": "GoatWolfChess_a9219e3a"
+        },
+        {
+            "type": "java",
+            "name": "Run GoatWolfChess",
+            "request": "launch",
+            "mainClass": "StartGame",
+            "projectName": "GoatWolfChess"
+        }
+    ]
+}
