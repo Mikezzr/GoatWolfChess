@@ -44,6 +44,13 @@ public class GamePlay extends JFrame{
     static int tmp_x;
     // the x-coordinate of the current player
     static int tmp_y;
+    static boolean animating = false;
+    static GamePlay instance;
+    static JLabel slideLabel1 = new JLabel();
+    static JLabel slideLabel2 = new JLabel();
+
+    static int cellX(int i) { return -20 + i * 60; }
+    static int cellY(int j) { return 100 + j * 60; }
     // the y-coordinate of the current player
     static boolean check1(int x,int y,int xx,int yy) // check whether (x,y) and (xx,yy) are connected
     {
@@ -512,36 +519,114 @@ public class GamePlay extends JFrame{
 
     // player1 walks from current position to (x,y)
     // change in x-coordinate is dx, change in y-coordinate is dy
-    static void walk1(int x,int y,int dx,int dy)
+    static void walk1(int x,int y,int dx,int dy,Runnable onComplete)
     {
         move1(x,y);
-        int xx=x, yy=y;
         if(Data.hasBanana[x][y])
         {
-            while(check2(xx,yy,xx+dx,yy+dy))
-            {
-                xx+=dx;
-                yy+=dy;
-                move1(xx,yy);
-            }
+            animating=true;
+            slideLabel1.setIcon(icon1);
+            slideLabel1.setBounds(cellX(x),cellY(y),55,55);
+            instance.getContentPane().add(slideLabel1);
+            instance.getContentPane().setComponentZOrder(slideLabel1,0);
+            Data.button[x][y].setIcon(Data.banana);
+            instance.repaint();
+            smoothSlide1(x,y,dx,dy,onComplete);
         }
+        else onComplete.run();
+    }
+
+    static void smoothSlide1(int fromX,int fromY,int dx,int dy,Runnable onComplete)
+    {
+        if(!check2(fromX,fromY,fromX+dx,fromY+dy))
+        {
+            instance.getContentPane().remove(slideLabel1);
+            Data.button[fromX][fromY].setIcon(icon1);
+            instance.repaint();
+            animating=false;
+            onComplete.run();
+            return;
+        }
+        int startPx=cellX(fromX), startPy=cellY(fromY);
+        int endPx=cellX(fromX+dx), endPy=cellY(fromY+dy);
+        int steps=12;
+        int[] frame={0};
+        Timer timer=new Timer(16,null);
+        timer.addActionListener(ev->{
+            frame[0]++;
+            if(frame[0]>=steps)
+            {
+                timer.stop();
+                move1(fromX+dx,fromY+dy);
+                Data.button[fromX+dx][fromY+dy].setIcon(Data.hasBanana[fromX+dx][fromY+dy]?Data.banana:null);
+                slideLabel1.setBounds(endPx,endPy,55,55);
+                instance.repaint();
+                smoothSlide1(fromX+dx,fromY+dy,dx,dy,onComplete);
+            }
+            else
+            {
+                float t=(float)frame[0]/steps;
+                slideLabel1.setBounds(startPx+(int)((endPx-startPx)*t),startPy+(int)((endPy-startPy)*t),55,55);
+                instance.repaint();
+            }
+        });
+        timer.start();
     }
 
     // player2 walks from current position to (x,y)
     // change in x-coordinate is dx, change in y-coordinate is dy
-    static void walk2(int x,int y,int dx,int dy)
+    static void walk2(int x,int y,int dx,int dy,Runnable onComplete)
     {
         move2(x,y);
-        int xx=x, yy=y;
         if(Data.hasBanana[x][y])
         {
-            while(check2(xx,yy,xx+dx,yy+dy))
-            {
-                xx+=dx;
-                yy+=dy;
-                move2(xx,yy);
-            }
+            animating=true;
+            slideLabel2.setIcon(icon2);
+            slideLabel2.setBounds(cellX(x),cellY(y),55,55);
+            instance.getContentPane().add(slideLabel2);
+            instance.getContentPane().setComponentZOrder(slideLabel2,0);
+            Data.button[x][y].setIcon(Data.banana);
+            instance.repaint();
+            smoothSlide2(x,y,dx,dy,onComplete);
         }
+        else onComplete.run();
+    }
+
+    static void smoothSlide2(int fromX,int fromY,int dx,int dy,Runnable onComplete)
+    {
+        if(!check2(fromX,fromY,fromX+dx,fromY+dy))
+        {
+            instance.getContentPane().remove(slideLabel2);
+            Data.button[fromX][fromY].setIcon(icon2);
+            instance.repaint();
+            animating=false;
+            onComplete.run();
+            return;
+        }
+        int startPx=cellX(fromX), startPy=cellY(fromY);
+        int endPx=cellX(fromX+dx), endPy=cellY(fromY+dy);
+        int steps=12;
+        int[] frame={0};
+        Timer timer=new Timer(16,null);
+        timer.addActionListener(ev->{
+            frame[0]++;
+            if(frame[0]>=steps)
+            {
+                timer.stop();
+                move2(fromX+dx,fromY+dy);
+                Data.button[fromX+dx][fromY+dy].setIcon(Data.hasBanana[fromX+dx][fromY+dy]?Data.banana:null);
+                slideLabel2.setBounds(endPx,endPy,55,55);
+                instance.repaint();
+                smoothSlide2(fromX+dx,fromY+dy,dx,dy,onComplete);
+            }
+            else
+            {
+                float t=(float)frame[0]/steps;
+                slideLabel2.setBounds(startPx+(int)((endPx-startPx)*t),startPy+(int)((endPy-startPy)*t),55,55);
+                instance.repaint();
+            }
+        });
+        timer.start();
     }
 
     static void init() //initialize all the parameters for a new game
@@ -736,6 +821,7 @@ public class GamePlay extends JFrame{
     }
     public GamePlay() // Add the game components and manipulate the movements and operations for each player.
     {
+        instance = this;
         Container container = this.getContentPane();
         this.setSize(700,700);
         this.setLocationRelativeTo(null);
@@ -1170,33 +1256,25 @@ public class GamePlay extends JFrame{
                 int x=i, y=j;
                 Data.button[x][y].addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        if(Data.gamestate==1 || Data.gamestate==-1)
+                        if((Data.gamestate==1 || Data.gamestate==-1) && !animating)
                         {
                             if(flag==0 && check2(Data.player1_x,Data.player1_y,x,y))
                             {
                                 int dx=x-Data.player1_x;
                                 int dy=y-Data.player1_y;
+                                Runnable after1=()->{remaining_steps--;Data.gamestate=1;};
                                 if(x==Data.player2_x && y==Data.player2_y && Data.push1)
-                                {
-                                    walk2(x+dx,y+dy,dx,dy);
-                                    walk1(x,y,dx,dy);
-                                }
-                                else walk1(x,y,dx,dy);
-                                remaining_steps--;
-                                Data.gamestate=1;
+                                    walk2(x+dx,y+dy,dx,dy,()->walk1(x,y,dx,dy,after1));
+                                else walk1(x,y,dx,dy,after1);
                             }
                             else if(flag==1 && check2(Data.player2_x,Data.player2_y,x,y))
                             {
                                 int dx=x-Data.player2_x;
                                 int dy=y-Data.player2_y;
+                                Runnable after2=()->{remaining_steps--;Data.gamestate=1;};
                                 if(x==Data.player1_x && y==Data.player1_y && Data.push2)
-                                {
-                                    walk1(x+dx,y+dy,dx,dy);
-                                    walk2(x,y,dx,dy);
-                                }
-                                else walk2(x,y,dx,dy);
-                                remaining_steps--;
-                                Data.gamestate=1;
+                                    walk1(x+dx,y+dy,dx,dy,()->walk2(x,y,dx,dy,after2));
+                                else walk2(x,y,dx,dy,after2);
                             }
                         }
                         if(Data.gamestate==3)
@@ -1775,37 +1853,40 @@ public class GamePlay extends JFrame{
                             y=Data.player2_y;
                         }
                     }
-                    if(flag==0 && check2(Data.player1_x,Data.player1_y,x,y))
+                    if(!animating && flag==0 && check2(Data.player1_x,Data.player1_y,x,y))
                     {
                         int dx=x-Data.player1_x;
                         int dy=y-Data.player1_y;
+                        Runnable afterK1=()->{
+                            remaining_steps--;Data.gamestate=1;
+                            if(flag==0) skill_button.setBackground(Color.RED);
+                            else skill_button.setBackground(new Color(90,0,255));
+                            if(check_skill() && Data.gamestate!=2) skill_button.setVisible(true);
+                            else skill_button.setVisible(false);
+                            if(Data.gamestate==1) confirm_button.setVisible(false);
+                        };
+                        final int fx1=x, fy1=y;
                         if(x==Data.player2_x && y==Data.player2_y && Data.push1)
-                        {
-                            walk2(x+dx,y+dy,dx,dy);
-                            walk1(x,y,dx,dy);
-                        }
-                        else walk1(x,y,dx,dy);
-                        remaining_steps--;
-                        Data.gamestate=1;
+                            walk2(fx1+dx,fy1+dy,dx,dy,()->walk1(fx1,fy1,dx,dy,afterK1));
+                        else walk1(fx1,fy1,dx,dy,afterK1);
                     }
-                    else if(flag==1 && check2(Data.player2_x,Data.player2_y,x,y))
+                    else if(!animating && flag==1 && check2(Data.player2_x,Data.player2_y,x,y))
                     {
                         int dx=x-Data.player2_x;
                         int dy=y-Data.player2_y;
+                        Runnable afterK2=()->{
+                            remaining_steps--;Data.gamestate=1;
+                            if(flag==0) skill_button.setBackground(Color.RED);
+                            else skill_button.setBackground(new Color(90,0,255));
+                            if(check_skill() && Data.gamestate!=2) skill_button.setVisible(true);
+                            else skill_button.setVisible(false);
+                            if(Data.gamestate==1) confirm_button.setVisible(false);
+                        };
+                        final int fx2=x, fy2=y;
                         if(x==Data.player1_x && y==Data.player1_y && Data.push2)
-                        {
-                            walk1(x+dx,y+dy,dx,dy);
-                            walk2(x,y,dx,dy);
-                        }
-                        else walk2(x,y,dx,dy);
-                        remaining_steps--;
-                        Data.gamestate=1;
+                            walk1(fx2+dx,fy2+dy,dx,dy,()->walk2(fx2,fy2,dx,dy,afterK2));
+                        else walk2(fx2,fy2,dx,dy,afterK2);
                     }
-                    if(flag==0) skill_button.setBackground(Color.RED);
-                    else skill_button.setBackground(new Color(90,0,255));
-                    if(check_skill() && Data.gamestate!=2) skill_button.setVisible(true);
-                    else skill_button.setVisible(false);
-                    if(Data.gamestate==1) confirm_button.setVisible(false);
                 }
             }
         });
