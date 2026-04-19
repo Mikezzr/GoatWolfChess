@@ -4,7 +4,7 @@ A two-player board game built with Java Swing.
 
 ## Requirements
 
-Java 11 or later
+Java 11 or later.
 
 ## Compile
 
