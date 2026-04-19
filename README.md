@@ -1,6 +1,6 @@
 # GoatWolfChess
 
-A two-player board game built with Java Swing.
+A two-player toy board game developed with the help of Claude Code.
 
 ## Requirements
 
