@@ -829,7 +829,7 @@ public class GamePlay extends JFrame{
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setLayout(null);
         this.setTitle("GoatWolfChess");
-        container.setBackground(Color.YELLOW);
+        container.setBackground(new Color(45, 25, 10));
 
         // add some basic game components if the game is proceeding
         if(Data.gamestate==1)
@@ -838,36 +838,46 @@ public class GamePlay extends JFrame{
 
             // show it's which player's turn
             turn_label.setBounds(200, 120, 160, 30);
-            turn_label.setForeground(Color.RED);
+            turn_label.setForeground(new Color(255, 200, 80));
             turn_label.setFont(new Font("Arial", Font.BOLD, 18));
             this.add(turn_label);
 
             // show the icon of player1
-            JLabel player1_label = new JLabel();
+            JLabel player1_label = new JLabel("Player 1");
             player1_label.setBounds(40,10,140,140);
+            player1_label.setForeground(Color.WHITE);
+            player1_label.setFont(new Font("Arial", Font.BOLD, 14));
+            player1_label.setHorizontalTextPosition(SwingConstants.CENTER);
+            player1_label.setVerticalTextPosition(SwingConstants.BOTTOM);
+            player1_label.setHorizontalAlignment(SwingConstants.CENTER);
             Data.player1_icon=Data.getIcon(Data.player1);
-            Data.player1_icon.setImage(Data.player1_icon.getImage().getScaledInstance(140,140,Image.SCALE_DEFAULT));
+            Data.player1_icon.setImage(Data.player1_icon.getImage().getScaledInstance(110,110,Image.SCALE_DEFAULT));
             player1_label.setIcon(Data.player1_icon);
             this.add(player1_label);
 
             // show the icon of player2
-            JLabel player2_label = new JLabel();
+            JLabel player2_label = new JLabel("Player 2");
             player2_label.setBounds(375,10,140,140);
+            player2_label.setForeground(Color.WHITE);
+            player2_label.setFont(new Font("Arial", Font.BOLD, 14));
+            player2_label.setHorizontalTextPosition(SwingConstants.CENTER);
+            player2_label.setVerticalTextPosition(SwingConstants.BOTTOM);
+            player2_label.setHorizontalAlignment(SwingConstants.CENTER);
             Data.player2_icon=Data.getIcon(Data.player2);
-            Data.player2_icon.setImage(Data.player2_icon.getImage().getScaledInstance(140,140,Image.SCALE_DEFAULT));
+            Data.player2_icon.setImage(Data.player2_icon.getImage().getScaledInstance(110,110,Image.SCALE_DEFAULT));
             player2_label.setIcon(Data.player2_icon);
             this.add(player2_label);
 
             // "VS" label
             JLabel VS_label = new JLabel("VS");
             VS_label.setBounds(250,10,140,140);
-            VS_label.setForeground(Color.RED);
+            VS_label.setForeground(new Color(255, 200, 80));
             VS_label.setFont(new Font("Arial",Font.BOLD,40));
             this.add(VS_label);
 
             // show the round of a game
             round_label.setBounds(235,10,140,40);
-            round_label.setForeground(Color.BLUE);
+            round_label.setForeground(new Color(100, 220, 255));
             round_label.setFont(new Font("Arial",Font.BOLD,20));
             this.add(round_label);
 
@@ -884,28 +894,28 @@ public class GamePlay extends JFrame{
             // control label
             JLabel control_label = new JLabel("Click the cells or press [W]  [A]  [S]  [D] to move.");
             control_label.setBounds(40,630,500,50);
-            control_label.setForeground(Color.RED);
+            control_label.setForeground(new Color(255, 200, 80));
             control_label.setFont(new Font("Arial",Font.BOLD,15));
             this.add(control_label);
 
             // board label1
             JLabel board_label1 = new JLabel("Choose direction to");
             board_label1.setBounds(525,190,250,40);
-            board_label1.setForeground(Color.RED);
+            board_label1.setForeground(new Color(255, 200, 80));
             board_label1.setFont(new Font("Arial",Font.BOLD,18));
             this.add(board_label1);
 
             // board label2
             JLabel board_label2 = new JLabel("place or break");
             board_label2.setBounds(550,220,250,40);
-            board_label2.setForeground(Color.RED);
+            board_label2.setForeground(new Color(255, 200, 80));
             board_label2.setFont(new Font("Arial",Font.BOLD,18));
             this.add(board_label2);
 
             // board label3
             JLabel board_label3 = new JLabel("the board:");
             board_label3.setBounds(570,250,250,40);
-            board_label3.setForeground(Color.RED);
+            board_label3.setForeground(new Color(255, 200, 80));
             board_label3.setFont(new Font("Arial",Font.BOLD,18));
             this.add(board_label3);
         }
@@ -917,7 +927,7 @@ public class GamePlay extends JFrame{
             {
                 JLabel label1 = new JLabel("Player 1 Wins!");
                 label1.setBounds(215, 0, 140, 30);
-                label1.setForeground(Color.RED);
+                label1.setForeground(new Color(100, 220, 255));
                 label1.setFont(new Font("Arial", Font.BOLD, 16));
                 this.add(label1);
 
@@ -932,14 +942,14 @@ public class GamePlay extends JFrame{
                 // show player1's scpre
                 JLabel label3 = new JLabel("Score of Player 1: " + Data.s1);
                 label3.setBounds(40, 55, 160, 50);
-                label3.setForeground(Color.BLUE);
+                label3.setForeground(new Color(255, 200, 80));
                 label3.setFont(new Font("Arial", Font.BOLD, 16));
                 this.add(label3);
 
                 // show player2's score
                 JLabel label4 = new JLabel("Score of Player 2: "+Data.s2);
                 label4.setBounds(350,55,160,50);
-                label4.setForeground(Color.BLUE);
+                label4.setForeground(new Color(255, 200, 80));
                 label4.setFont(new Font("Arial",Font.BOLD,16));
                 this.add(label4);
             }
@@ -947,7 +957,7 @@ public class GamePlay extends JFrame{
             {
                 JLabel label1 = new JLabel("Player 2 Wins!");
                 label1.setBounds(215, 0, 140, 30);
-                label1.setForeground(Color.RED);
+                label1.setForeground(new Color(100, 220, 255));
                 label1.setFont(new Font("Arial", Font.BOLD, 16));
                 this.add(label1);
 
@@ -962,14 +972,14 @@ public class GamePlay extends JFrame{
                 // show the score of player1
                 JLabel label3 = new JLabel("Score of Player 1: " + Data.s1);
                 label3.setBounds(40, 55, 160, 50);
-                label3.setForeground(Color.BLUE);
+                label3.setForeground(new Color(255, 200, 80));
                 label3.setFont(new Font("Arial", Font.BOLD, 16));
                 this.add(label3);
 
                 // show the score of player2
                 JLabel label4 = new JLabel("Score of Player 2: "+Data.s2);
                 label4.setBounds(350,55,160,50);
-                label4.setForeground(Color.BLUE);
+                label4.setForeground(new Color(255, 200, 80));
                 label4.setFont(new Font("Arial",Font.BOLD,16));
                 this.add(label4);
             }
@@ -994,21 +1004,21 @@ public class GamePlay extends JFrame{
                 // Tie label
                 JLabel lable3 = new JLabel("Tie");
                 lable3.setBounds(250,10,140,140);
-                lable3.setForeground(Color.RED);
+                lable3.setForeground(new Color(255, 200, 80));
                 lable3.setFont(new Font("Arial",Font.BOLD,40));
                 this.add(lable3);
 
                 // show the score of player1
                 JLabel label4 = new JLabel("Score of Player 1: " + Data.s1);
                 label4.setBounds(205, 10, 160, 50);
-                label4.setForeground(Color.BLUE);
+                label4.setForeground(new Color(255, 200, 80));
                 label4.setFont(new Font("Arial", Font.BOLD, 16));
                 this.add(label4);
 
                 // show the score of player2
                 JLabel label5 = new JLabel("Score of Player 2: "+Data.s2);
                 label5.setBounds(205,100,160,50);
-                label5.setForeground(Color.BLUE);
+                label5.setForeground(new Color(255, 200, 80));
                 label5.setFont(new Font("Arial",Font.BOLD,16));
                 this.add(label5);
             }
